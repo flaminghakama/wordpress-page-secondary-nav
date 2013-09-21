@@ -50,12 +50,9 @@ class page_secondary_nav extends WP_Widget {
       // Display the widget
       echo '<div class="widget-text wp_widget_plugin_box">';
 
-      // Check if title is set
-      if ( $title ) { echo $before_title . $title . $after_title ; }
-
       $post_id = $GLOBALS[_GET]['page_id'] ; 
       $ancestor = array_pop(get_post_ancestors($post_id)) ; 
-      echo "Page ID is $post_id, Ancestor ID is $ancestor" ; 
+      //echo "Page ID is $post_id, Ancestor ID is $ancestor" ; 
 
       $query_args = array(
 	'sort_order' => 'ASC',
@@ -68,35 +65,46 @@ class page_secondary_nav extends WP_Widget {
 	'post_type' => 'page',
 	'post_status' => 'publish'
       ); 
-      $pages = get_pages($args); ?>
+      $pages = get_pages($args); 
 
-     <ul class="a"> <?php
+      $section_title = get_the_title($ancestor) ; 
+      echo $before_title . $section_title . $after_title ; ?>
+
+     <ul class="a"> 
+                    <?php
 
      $relevant = false ; 
      $last_parent = -1 ; 
      foreach ( $pages as $page ) { 
         
-        echo "\n<p border=>Ancestor / Parent :: $ancestor / " . $page->post_parent . "</p>\n" ;
+        //echo "\n<p border=>Ancestor / Parent / ID :: $ancestor / " . $page->post_parent . " / " . $page->ID . "</p>\n" ;
     
         if ( $page->post_parent == $ancestor ) {
+
            if ( $relevant ) { ?>
-           </ul> <?php
+           </ul for="b">
+                          <?php
              $relevant = false ;  
            } else { 
              $relevant = true ; 
            }  ?>
-           <li><a href="<?php get_permalink($page->ID) ?>"><?php echo $page->post_title; ?></a></li> <?php
+           <li><a href="<?php get_permalink($page->ID) ?>"><?php echo $page->post_title; ?></a></li> 
+                                                                                                      <?php
         } else if ( $page->post_parent == 0 ) { 
            $relevant = false ; 
         } else if ( $relevant ) { 
           if ( $last_parent != $page->post_parent ) { ?>
-           <ul> <?php 
+           <ul class="b">
+                           <?php 
            $last_parent = $page->post_parent ;
           } ?>
-              <li><a href="<?php get_permalink($page->ID) ?>"><?php echo $page->post_title; ?></a></li> <?php
+              <li><a href="<?php get_permalink($page->ID) ?>"><?php echo $page->post_title; ?></a></li> 
+                                                                                                        <?php
         }
      } ?>
-     </ul> <?php 
+         </ul for="b"> 
+     </ul for="a"> <?php 
+     echo $after_widget;
    }
 }
 
