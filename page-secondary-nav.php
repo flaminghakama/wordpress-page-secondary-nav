@@ -68,19 +68,35 @@ class page_secondary_nav extends WP_Widget {
 	'post_type' => 'page',
 	'post_status' => 'publish'
       ); 
-      $pages = get_pages($args); 
+      $pages = get_pages($args); ?>
 
-     $nav = array() ; 
+     <ul class="a"> <?php
 
+     $relevant = false ; 
+     $last_parent = -1 ; 
      foreach ( $pages as $page ) { 
-
-      
-        echo "<hr><p border=>Ancestor / Parent :: $ancestor / " . $page->post_parent . "</p>\n" ;
+        
+        echo "\n<p border=>Ancestor / Parent :: $ancestor / " . $page->post_parent . "</p>\n" ;
     
-        if ( $page->post_parent == $ancestor ) { ?>
+        if ( $page->post_parent == $ancestor ) {
+           if ( $relevant ) { ?>
+           </ul> <?php
+             $relevant = false ;  
+           } else { 
+             $relevant = true ; 
+           }  ?>
            <li><a href="<?php get_permalink($page->ID) ?>"><?php echo $page->post_title; ?></a></li> <?php
-        } 
-      }
+        } else if ( $page->post_parent == 0 ) { 
+           $relevant = false ; 
+        } else if ( $relevant ) { 
+          if ( $last_parent != $page->post_parent ) { ?>
+           <ul> <?php 
+           $last_parent = $page->post_parent ;
+          } ?>
+              <li><a href="<?php get_permalink($page->ID) ?>"><?php echo $page->post_title; ?></a></li> <?php
+        }
+     } ?>
+     </ul> <?php 
    }
 }
 
