@@ -109,6 +109,6 @@ class page_secondary_nav extends WP_Widget {
 }
 
 //  Whenever widgets are iniatilized, run the specified function 
-add_action('widgets_init', function() { register_widget('page_secondary_nav') ; }) ;
+add_action('widgets_init', create_function( '', 'register_widget('page_secondary_nav') ; }) ;
 
 ?>
