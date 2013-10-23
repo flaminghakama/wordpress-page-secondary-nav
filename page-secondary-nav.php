@@ -55,9 +55,12 @@ class page_secondary_nav extends WP_Widget {
       // Display the widget
       echo '<div class="widget-text wp_widget_plugin_box">';
 
-      $post_id = $GLOBALS[_GET]['page_id'] ; 
-      $ancestor = array_pop(get_post_ancestors($post_id)) ; 
       //echo "Page ID is $post_id, Ancestor ID is $ancestor" ; 
+
+      global $wp_query;
+      $post_obj = $wp_query->get_queried_object();
+      $post_id = $post_obj->ID;
+      $ancestor = array_pop(get_post_ancestors($post_id)) ;
 
       $query_args = array(
 	'sort_order' => 'ASC',
