@@ -1,26 +1,35 @@
 <?php 
 
 /*
- * Page_Nav
+ *  Page_Nav(ancestor,current)
  *
- * Represents a list of instances of Nav_Page.
+ *  Represents a list of instances of Nav_Page.
  *
- * You can add Nav_Pages to a Page_Nav and 
- * print out an HTML formatted version of the entire nav structure.
+ *  ancestor -- the wordpress page ID of the "ancestor" of the current page.
+ *    all pages share the same ancestor
+ *  current -- the wordpress page ID of the actual page in which this nav exists.
+ *    used for visually specifying which page is selected.
+
+ *  You can add Nav_Pages to a Page_Nav 
+ *  and print out an HTML-formatted version of the entire nav structure.
+ *
  */
 class Page_Nav
 {
     Public $ancestor ;       
     public $pages ; 
+    public $current ; 
     public $current_parent_page ; 
 
     /*
      *  The ancestor is a WordPress page ID
      *  the parent is a Nav_Page object
      */
-    public function __construct($ancestor)
+    public function __construct($ancestor, $current)
     {
+	//echo "<p>constructing Page_Nav with ancestor $ancestor and current $current</p>\n" ; 
         $this->ancestor = $ancestor ; 
+        $this->current = $current ; 
         $this->pages = NULL ;
         $this->current_parent_page = NULL ; 
     }
@@ -46,7 +55,7 @@ class Page_Nav
      */
     public function sort_page($page)
     {
-	$nav_page = new Nav_Page($page) ; 
+	$nav_page = new Nav_Page($page, $this->current) ; 
 	//echo "<p>page is " . $nav_page->title . "</p>\n" ; 
 	
         //  This is an instance of a good first-level page
@@ -79,7 +88,11 @@ class Page_Nav
       { 
           foreach ($this->pages as $nav_page) 
 	  {
- 	      $html .= $nav_page->format() ; 
+	      $indicator = false ; 
+	      if ( $nav_page->ID == $this->current ) { 
+	        $indicator = true ; 
+	      }
+ 	      $html .= $nav_page->format($indicator) ; 
 	  }
       }
  
@@ -100,9 +113,10 @@ class Nav_Page
     /*
      * 
      */
-    public function __construct($page)
+    public function __construct($page, $current)
     {
         $this->page = $page ; 
+        $this->current = $current ; 
         $this->parent = $page->post_parent ; 
         $this->ID = $page->ID ; 
         $this->title = $page->post_title ; 
@@ -120,15 +134,19 @@ class Nav_Page
     {
 	if ( $this->subnav == NULL ) 
 	{ 
-	    $this->subnav = new Page_Nav($this->parent) ; 
+	    $this->subnav = new Page_Nav($this->parent, $this->current) ; 
 	}
 	$this->subnav->add_page($nav_page) ; 
     }
 
 
-    public function format() 
+    public function format($current) 
     { 
-      $html = "<li><a href='$this->link'>$this->title</a>" ; 
+      $attribute = "" ; 
+      if ( $current ) { 
+	  $attribute = "class='current'" ; 
+      }
+      $html = "<li $attribute><a href='$this->link'>$this->title</a>" ; 
  
       if ($this->subnav != NULL) { 
           $html .= $this->subnav->format() ; 

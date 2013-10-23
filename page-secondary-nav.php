@@ -3,7 +3,7 @@
 Plugin Name: Page Secondary Nav
 Plugin URI: https://github.com/flaminghakama/wordpress-page-secondary-nav
 Description: A widget that provides secondary navigation
-Version: 0.1
+Version: 0.2
 Author: David Elaine Alt
 Author URI: http://flaminghakama.com
 License: GPL2
@@ -78,8 +78,8 @@ class page_secondary_nav extends WP_Widget {
       $parentNav = NULL ; 
  
       foreach ( $pages as $page ) { 
-	  //echo "\n<p border=>Anc. / Parent / ID :: $ancestor / " . $page->post_parent . " / " . $page->ID . "</p>\n" ;
-	  if ( $parentNav == NULL ) { $parentNav = new Page_Nav($ancestor) ; }
+	  //echo "\n<p border=>Current / Anc. / Parent / ID :: $post_id / $ancestor / " . $page->post_parent . " / " . $page->ID . "</p>\n" ;
+	  if ( $parentNav == NULL ) { $parentNav = new Page_Nav($ancestor, $post_id) ; }
 	  $parentNav->sort_page($page) ;  
       }
       
