@@ -55,18 +55,20 @@ class page_secondary_nav extends WP_Widget {
       // Display the widget
       echo '<div class="widget-text wp_widget_plugin_box">';
 
-      //echo "Page ID is $post_id, Ancestor ID is $ancestor" ; 
-
       global $wp_query;
       $post_obj = $wp_query->get_queried_object();
-      $post_id = $post_obj->ID;
-      $ancestor = array_pop(get_post_ancestors($post_id)) ;
+      $current_page_id = $post_obj->ID;
+      $ancestor = array_pop(get_post_ancestors($current_page_id)) ;
+
+      if ( $ancestor == "" ) { 
+         $ancestor = $current_page_id ; 
+      }
 
       $query_args = array(
 	'sort_order' => 'ASC',
 	'sort_column' => 'menu_order',
 	'hierarchical' => 0,
-	'child_of' => $post_id,
+	'child_of' => $current_page_id,
 	'parent' => -1,
 	'exclude_tree' => '',
 	'offset' => 0,
@@ -81,8 +83,9 @@ class page_secondary_nav extends WP_Widget {
       $parentNav = NULL ; 
  
       foreach ( $pages as $page ) { 
-	  //echo "\n<p border=>Current / Anc. / Parent / ID :: $post_id / $ancestor / " . $page->post_parent . " / " . $page->ID . "</p>\n" ;
-	  if ( $parentNav == NULL ) { $parentNav = new Page_Nav($ancestor, $post_id) ; }
+	  //echo "<p>" . $page->post_title . "<br>\n" . 
+	  //"Current / Anc. / Parent / ID ::<br> $current_page_id / $ancestor / " . $page->post_parent . " / " . $page->ID . "</p>\n" ;
+	  if ( $parentNav == NULL ) { $parentNav = new Page_Nav($ancestor, $current_page_id) ; }
 	  $parentNav->sort_page($page) ;  
       }
       
