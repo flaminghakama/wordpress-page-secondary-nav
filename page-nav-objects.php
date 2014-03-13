@@ -9,7 +9,6 @@
  *    all pages share the same ancestor
  *  current -- the wordpress page ID of the actual page in which this nav exists.
  *    used for visually specifying which page is selected.
-
  *  You can add Nav_Pages to a Page_Nav 
  *  and print out an HTML-formatted version of the entire nav structure.
  *
@@ -44,16 +43,17 @@ class Page_Nav
     public function add_page($nav_page)
     {
         if ( $this->pages == NULL ) { $this->pages = array() ; }
-        return array_push($this->pages, $nav_page) ; 
+        $this->pages[$nav_page->order] = $nav_page ; 
+        return count($this->pages) ; 
     }
 
     /*
-     * sort_page(page)
+     * filter_page(page)
      * create a Nav_Page object from the specified WP page
      * and place it in the appropriate list--either the current Page_Nav, 
      * or a subnav of the current parent page
      */
-    public function sort_page($page)
+    public function filter_page($page)
     {
 	$nav_page = new Nav_Page($page, $this->current) ; 
 	//echo "<p>page is " . $nav_page->title . "</p>\n" ; 
@@ -86,6 +86,7 @@ class Page_Nav
  
       if ($this->pages != NULL) 
       { 
+          ksort($this->pages) ; 
           foreach ($this->pages as $nav_page) 
 	  {
 	      $indicator = false ; 
@@ -94,8 +95,7 @@ class Page_Nav
 	      }
  	      $html .= $nav_page->format($indicator) ; 
 	  }
-      }
- 
+      } 
       return $html . "</ul>\n" ; 
     }
 }
@@ -111,12 +111,15 @@ class Page_Nav
 class Nav_Page
 {
     /*
-     * 
+     * page -- WP page object
+     * current -- the wordpress page ID of the actual page in which this nav exists.
+     *    used for visually specifying which page is selected.
      */
     public function __construct($page, $current)
     {
         $this->page = $page ; 
         $this->current = $current ; 
+        $this->order = $page->menu_order ; 
         $this->parent = $page->post_parent ; 
         $this->ID = $page->ID ; 
         $this->title = $page->post_title ; 

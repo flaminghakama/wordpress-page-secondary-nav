@@ -84,9 +84,9 @@ class page_secondary_nav extends WP_Widget {
  
       foreach ( $pages as $page ) { 
 	  //echo "<p>" . $page->post_title . "<br>\n" . 
-	  //"Current / Anc. / Parent / ID ::<br> $current_page_id / $ancestor / " . $page->post_parent . " / " . $page->ID . "</p>\n" ;
+	  //"Cur. / Anc. / Parent / ID / Menu Order ::<br> $current_page_id / $ancestor / " . $page->post_parent . " / " . $page->ID . " / " . $page->menu_order . "</p>\n" ;
 	  if ( $parentNav == NULL ) { $parentNav = new Page_Nav($ancestor, $current_page_id) ; }
-	  $parentNav->sort_page($page) ;  
+	  $parentNav->filter_page($page) ;  
       }
       
       echo $parentNav->format() ; 
