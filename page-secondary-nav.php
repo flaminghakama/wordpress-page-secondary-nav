@@ -3,7 +3,7 @@
 Plugin Name: Page Secondary Nav
 Plugin URI: https://github.com/flaminghakama/wordpress-page-secondary-nav
 Description: A widget that provides secondary navigation
-Version: 0.3
+Version: 0.4
 Author: David Elaine Alt
 Author URI: http://flaminghakama.com
 License: GPL2
